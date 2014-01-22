@@ -15,18 +15,22 @@ local GetSpellInfo = GetSpellInfo
 local UnitBuff = UnitBuff
 local UnitDebuff = UnitDebuff
 
-local auras = {}
+local buffs = {}
+local debuffs = {}
 
 hooksecurefunc(Bartender3.Class.Button.prototype, "UpdateButton", function(self)
     if not HasAction(self.action) then return end
     local type, idx = GetActionInfo(self.action)
+
     if type ~= "spell" then return end
+
     local name, rank = GetSpellInfo(idx, "SPELLBOOK")
-    local aura = auras[name]
+    local buff = buffs[name]
+    local debuff = debuffs[name]
     local br = self.frame.border
 
-    if aura and abs(aura) == (tonumber(strsub(rank, 6, 6)) or 0) then
-        br:SetVertexColor(aura < 0 and 1 or 0, aura > 0 and 1 or 0, 0, 1)
+    if buff and buff == rank or debuff and debuff == rank then
+        br:SetVertexColor(debuff and 1 or 0, buff and 1 or 0, 0, 1)
         br:Show()
     else
         br:Hide()
@@ -38,21 +42,27 @@ local Auras = CreateFrame("Frame", "Bar3_InlineAuras")
 Auras:SetScript("OnEvent", function(self, event, unit)
     unit = unit or "target"
     if unit ~= "target" then return end
-    for k in pairs(auras) do auras[k] = nil end
+
+    for k in pairs(buffs)   do buffs[k] = nil   end
+    for k in pairs(debuffs) do debuffs[k] = nil end
 
     for i = 1, 50 do
         local buff, rank = UnitBuff(unit, i)
         if not buff then break end
-        auras[buff] = tonumber(strsub(rank, 6, 6) or 0)
+        buffs[buff] = rank
     end
 
     for i = 1, 50 do
         local buff, rank = UnitDebuff(unit, i)
         if not buff then break end
-        auras[buff] = -tonumber(strsub(rank, 6, 6) or 0)
+        debuffs[buff] = rank
     end
 
-    bar3:RefreshBars()
+    for _, btn in pairs(bar3.actionbuttons) do
+        if btn.state == "used" then
+            btn.object:UpdateButton(true)
+        end
+    end
 end)
 
 Auras:RegisterEvent("PLAYER_TARGET_CHANGED")
