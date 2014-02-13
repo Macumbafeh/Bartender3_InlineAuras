@@ -20,11 +20,16 @@ local debuffs = {}
 
 hooksecurefunc(Bartender3.Class.Button.prototype, "UpdateButton", function(self)
     if not HasAction(self.action) then return end
-    local type, idx = GetActionInfo(self.action)
+    local type, idx, name, rank = GetActionInfo(self.action)
 
-    if type ~= "spell" then return end
+    if type == "spell" then
+        name, rank = GetSpellInfo(idx, "SPELLBOOK")
+    elseif type == "macro" then
+        name, rank = GetMacroSpell(idx)
+    else
+        return
+    end
 
-    local name, rank = GetSpellInfo(idx, "SPELLBOOK")
     local buff = buffs[name]
     local debuff = debuffs[name]
     local br = self.frame.border
