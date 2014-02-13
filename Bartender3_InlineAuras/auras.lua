@@ -29,11 +29,13 @@ hooksecurefunc(Bartender3.Class.Button.prototype, "UpdateButton", function(self)
     local debuff = debuffs[name]
     local br = self.frame.border
 
-    if buff and buff == rank or debuff and debuff == rank and not br:IsShown() then
-        br:SetVertexColor(debuff and 1 or 0, buff and 1 or 0, 0, 1)
-        br:Show()
-    elseif br:IsShown() then
-        br:Hide()
+    if buff and buff == rank or debuff and debuff == rank then
+        if not br:IsShown() then
+            br:SetVertexColor(debuff and 1 or 0, buff and 1 or 0, 0, 1)
+            br:Show()
+        end
+    else
+        if br:IsShown() then br:Hide() end
     end
 end)
 
