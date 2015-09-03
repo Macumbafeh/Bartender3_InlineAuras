@@ -2,7 +2,7 @@
 ## Title: Bartender3 [|cffeda55fInlineAuras|r]
 ## Notes: Displays auras on action bar buttons. Authored by Siarkowy
 ## Author: Siarkowy
-## Version: 1.3
+## Version: 1.4
 ## RequiredDeps: Bartender3
 ## X-Category: Action Bars
 ## X-License: BSD 2.0

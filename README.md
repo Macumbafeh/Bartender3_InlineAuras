@@ -1,9 +1,9 @@
-InlineAuras
-===========
+Bartender3_InlineAuras
+======================
 
 Displays target auras on Bartender 3 action buttons.
 
-Buffs get green border, while debuffs—red.
+Buffs get green border, while debuffs---red.
 
 ![screen](http://siarkowy.net/img/InlineAuras.png)
 
