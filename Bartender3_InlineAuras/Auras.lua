@@ -18,6 +18,16 @@ local UnitDebuff = UnitDebuff
 local buffs = {}
 local debuffs = {}
 
+-- Target (de)buff to player spell map
+local aliases = {
+    ["Fire Vulnerability"] = "Scorch"
+}
+
+-- Spells that ignore rank check
+local ignore_rank = {
+    ["Scorch"] = true
+}
+
 hooksecurefunc(Bartender3.Class.Button.prototype, "UpdateButton", function(self)
     if not HasAction(self.action) then return end
     local type, idx, name, rank = GetActionInfo(self.action)
@@ -34,7 +44,8 @@ hooksecurefunc(Bartender3.Class.Button.prototype, "UpdateButton", function(self)
     local debuff = debuffs[name]
     local br = self.frame.border
 
-    if buff and buff == rank or debuff and debuff == rank then
+    if buff and (ignore_rank[name] or buff == rank)
+    or debuff and (ignore_rank[name] or debuff == rank) then
         if not br:IsShown() then
             br:SetVertexColor(debuff and 1 or 0, buff and 1 or 0, 0, 1)
             br:Show()
@@ -56,13 +67,13 @@ Auras:SetScript("OnEvent", function(self, event, unit)
     for i = 1, 50 do
         local buff, rank = UnitBuff(unit, i)
         if not buff then break end
-        buffs[buff] = rank
+        buffs[aliases[buff] or buff] = rank
     end
 
     for i = 1, 50 do
         local buff, rank = UnitDebuff(unit, i)
         if not buff then break end
-        debuffs[buff] = rank
+        debuffs[aliases[buff] or buff] = rank
     end
 
     for _, btn in pairs(bar3.actionbuttons) do
